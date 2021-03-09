@@ -4,7 +4,7 @@ using System.IO;
 // hacer version de GitHub con todas las variables publicas pero dejar en mi ordenador la version con variables internal
 namespace Neuronal_Network
 {
-    internal class NeuronalNetwork
+    public partial class NeuronalNetwork
     {
         private readonly Random random = new Random();
         public Layer[] layers;
@@ -14,7 +14,7 @@ namespace Neuronal_Network
         /// Instanciate a new network.
         /// </summary>
         /// <param name="neuronsPerLayer">An array that represents the number of neurons in hidden layers and the last value represents the neurons in the output layer</param>
-        /// <param name="neuronWeights">Set an specific set of weights or they will be set randomly between </param>
+        /// <param name="neuronWeights">Set an specific set of weights or they will be set randomly between -1 and 1</param>
         public NeuronalNetwork(int[] neuronsPerLayer, double[] neuronWeights = null)
         {
             if (neuronsPerLayer.Length < 1)
@@ -59,12 +59,14 @@ namespace Neuronal_Network
             if (optionalInputweigths == null)
                 output = input;
             else
-                output = new Layer(0, optionalInputweigths.Length, this).ExecuteLayer(input);
-
-            for (int i = 1; i < layers.Length; i++)
             {
-                output = layers[i].ExecuteLayer(output);
+                for (int i = 0; i < Math.Min(optionalInputweigths.Length, input.Length); i++)
+                    input[i] *= optionalInputweigths[i];
+                output = input;
             }
+
+            for (int i = 0; i < layers.Length; i++)
+                output = layers[i].ExecuteLayer(output);
 
             return output;
         }
@@ -72,20 +74,6 @@ namespace Neuronal_Network
         public double[] ExecuteNetworkWithPercentagedOutput(double[] input, double[] optionalInputWeights = null)
             => GetValuesInPercentages(ExecuteNetwork(input, optionalInputWeights));
 
-        public double CostFunction()
-        {//TODO: implement cost function.
-            throw new NotImplementedException();
-            double output;
-
-
-            int sumatory(int startingNumber, int lastNumber)
-            {
-                for (int i = lastNumber - startingNumber; i <= lastNumber; i++)
-                    startingNumber += startingNumber + i;
-                return startingNumber;
-            }
-            return 0;
-        }
 
         /// <summary>
         /// Get each neuron value percetage. Note: Its really useful to easily read outputs
@@ -104,7 +92,7 @@ namespace Neuronal_Network
 
         static public double[] stringToDoubleArray(string s)
         {
-            string[] rawValues = s.Split(" ".ToCharArray());
+            string[] rawValues = s.Split("\n".ToCharArray());
             double[] parsedValues = new double[rawValues.Length];
             for (int i = 0; i < rawValues.Length; i++)
                 parsedValues[i] = Convert.ToDouble(rawValues[i]);
@@ -115,7 +103,7 @@ namespace Neuronal_Network
         {
             string output = string.Empty;
             for (int i = 0; i < array.Length; i++)
-                output += array[i].ToString() + " ";
+                output += array[i].ToString() + "\n";
             return output;
         }
 
@@ -161,6 +149,11 @@ namespace Neuronal_Network
 
         public double[] GetNetworkWeights() => stringToDoubleArray(GetNetworkweightsString());
 
+
+
+
+
+
         public class Layer
         {
             internal NeuronalNetwork parentNetwork;
@@ -200,7 +193,7 @@ namespace Neuronal_Network
             {
                 string weights = string.Empty;
                 foreach (Neuron neuron in neurons)
-                    weights += neuron.weight.ToString() + " ";
+                    weights += neuron.weight.ToString() + "\n";
                 return weights;
             }
 
@@ -220,12 +213,17 @@ namespace Neuronal_Network
 
             public void SetLayerNeuronWeights(string weights)
             {
-                string[] rawValues = weights.Split(" ".ToCharArray());
+                string[] rawValues = weights.Split("\n".ToCharArray());
                 double[] parsedValues = new double[rawValues.Length];
                 for (int i = 0; i < rawValues.Length; i++)
                     parsedValues[i] = Convert.ToDouble(rawValues[i]);
                 SetLayerNeuronWeights(parsedValues);
             }
+
+
+
+
+
 
             internal class Neuron
             {
