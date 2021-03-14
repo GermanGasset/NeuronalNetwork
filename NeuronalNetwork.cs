@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 
-// hacer version de GitHub con todas las variables publicas pero dejar en mi ordenador la version con variables internal
 namespace Neuronal_Network
 {
     public partial class NeuronalNetwork
