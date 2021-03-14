@@ -17,6 +17,12 @@ namespace Neuronal_Network
         /// <param name="neuronWeights">Set an specific set of weights or they will be set randomly between -1 and 1</param>
         public NeuronalNetwork(int[] neuronsPerLayer, double[] neuronWeights = null)
         {
+            layers = GenerateLayersFromWeigths(neuronsPerLayer, neuronWeights);
+        }
+
+        /// <param name="weights">Null for random</param>
+        public Layer[] GenerateLayersFromWeigths(int[] neuronsPerLayer, double[] weights = null)
+        {
             if (neuronsPerLayer.Length < 1)
                 throw new Exception("A network needs at least an output layer");
             for (int i = 0; i < neuronsPerLayer.Length; i++)
@@ -24,21 +30,22 @@ namespace Neuronal_Network
                     throw new Exception("Impossible to assing 0 or negative number of neurons");
 
             int assignedNeurons = 0;
-            layers = new Layer[neuronsPerLayer.Length];
+            Layer[] output = new Layer[neuronsPerLayer.Length];
             NeuronCount = 0;
             for (int i = 0; i < neuronsPerLayer.Length; i++)
                 NeuronCount += neuronsPerLayer[i];
-            for (int i = 0; i < layers.Length; i++)
+
+            for (int i = 0; i < output.Length; i++)
             {
                 double[] layerWeights = null;
-                if (neuronWeights != null)
+                if (weights != null)
                 {
                     layerWeights = new double[neuronsPerLayer[i]];
                     for (int ii = 0; ii < layerWeights.Length; ii++)
                     {
                         try
                         {
-                            layerWeights[ii] = neuronWeights[ii + assignedNeurons];
+                            layerWeights[ii] = weights[ii + assignedNeurons];
                         }
                         catch (IndexOutOfRangeException)
                         {
@@ -46,9 +53,10 @@ namespace Neuronal_Network
                         }
                     }
                 }
-                layers[i] = new Layer(i, neuronsPerLayer[i], this, layerWeights);
+                output[i] = new Layer(i, neuronsPerLayer[i], this, layerWeights);
                 assignedNeurons += neuronsPerLayer[i];
             }
+            return output;
         }
 
         /// <param name="optionalInputweigths">Give focus to certain neurons</param>
@@ -73,6 +81,25 @@ namespace Neuronal_Network
 
         public double[] ExecuteNetworkWithPercentagedOutput(double[] input, double[] optionalInputWeights = null)
             => GetValuesInPercentages(ExecuteNetwork(input, optionalInputWeights));
+
+        /// <summary>
+        /// Executes the network and gets the index of the neuron with highestValue
+        /// </summary>
+        public int GetPredictionIndex(double[] input, double[] optionalInputWeights = null)
+            => GetBiggestIndex(ExecuteNetwork(input, optionalInputWeights));
+
+        private int GetBiggestIndex(double[] input)
+        {
+            int output = -1;
+            double maxValue = double.MinValue;
+            for (int i = 0; i < input.Length; i++)
+                if (input[i] > maxValue)
+                {
+                    output = i;
+                    maxValue = input[i];
+                }
+            return output;
+        }
 
 
         /// <summary>

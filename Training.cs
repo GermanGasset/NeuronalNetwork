@@ -10,18 +10,19 @@ namespace Neuronal_Network
         /// Change every weight by a random positive or negative amount
         /// Useful to train the Network using Genetic Algorithm
         /// </summary>
-        /// <param name="maxVariation">Maximum change in weights</param>
+        /// <param name="maxVariation">Maximum change in weights. Doesn't matter if its possitive</param>
         public void VariateWeights(double maxVariation)
         {
-            foreach (Layer layer in layers)
-                foreach (var neuron in layer.neurons)
-                {
-                    bool isPositive = Convert.ToBoolean(random.Next(2));
-                    double variation = maxVariation * random.NextDouble();
-                    if (!isPositive)
-                        variation *= -1;
-                    neuron.weight += variation;
-                }
+            if (maxVariation != 0)
+                foreach (Layer layer in layers)
+                    foreach (var neuron in layer.neurons)
+                    {
+                        bool isPositive = Convert.ToBoolean(random.Next(2));
+                        double variation = maxVariation * random.NextDouble();
+                        if (!isPositive)
+                            variation *= -1;
+                        neuron.weight += variation;
+                    }
         }
 
         public double CostFunction()
