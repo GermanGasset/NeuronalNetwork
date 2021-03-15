@@ -116,7 +116,7 @@ namespace Neuronal_Network
             return output;
         }
 
-        static public double[] stringToDoubleArray(string s)
+        static public double[] StringToDoubleArray(string s)
         {
             string[] rawValues = s.Split("\n".ToCharArray());
             double[] parsedValues = new double[rawValues.Length];
@@ -125,7 +125,7 @@ namespace Neuronal_Network
             return parsedValues;
         }
 
-        static public string doubleArrayToString(double[] array)
+        static public string DoubleArrayToString(double[] array)
         {
             string output = string.Empty;
             for (int i = 0; i < array.Length; i++)
@@ -154,7 +154,7 @@ namespace Neuronal_Network
             try
             {
                 reader = File.OpenText(path);
-                double[] output = stringToDoubleArray(reader.ReadToEnd());
+                double[] output = StringToDoubleArray(reader.ReadToEnd());
                 reader.Close();
                 return output;
             }
@@ -173,7 +173,7 @@ namespace Neuronal_Network
             return output.Remove(output.Length - 1);
         }
 
-        public double[] GetNetworkWeights() => stringToDoubleArray(GetNetworkweightsString());
+        public double[] GetNetworkWeights() => StringToDoubleArray(GetNetworkweightsString());
 
 
 
