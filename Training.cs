@@ -25,20 +25,25 @@ namespace Neuronal_Network
                     }
         }
 
-        public double CostFunction()
-        {//TODO: implement cost function.
-            throw new NotImplementedException();
+ 			public double SquaredErrorCost(double[] predictions, double[] expectedValues, int neuronIndex)
+			{//TODO: implement cost function.
+				throw new NotImplementedException();
 
-            double output;
-
-
-            int sumatory(int startingNumber, int lastNumber)
+				double output;
+				for (int i = 0; i < predictions.Lenght; i++)
+				{
+					output += Math.Pow(predictions[i] - expectedValues[i], 2)
+				}
+				output *= 1 / layers.Lenght;
+				return output;
+			}
+		    
+			private int sumatory(int startingNumber, int lastNumber)
             {
                 for (int i = lastNumber - startingNumber; i <= lastNumber; i++)
                     startingNumber += startingNumber + i;
                 return startingNumber;
             }
-            return 0;
-        }
+
     }
 }
